@@ -1,0 +1,125 @@
+--[[ 
+  Shadow X Hub | Main Loader
+  Made by: @ShadowNinjaPlayZ
+  Features: 100+ Fully Working
+--]]
+
+--// Services
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local TeleportService = game:GetService("TeleportService")
+local LocalPlayer = Players.LocalPlayer
+local Camera = workspace.CurrentCamera
+
+--// Settings
+local KEY_REQUIRED = "shadowIsking! 2025best"
+
+--// UI Creation
+local ScreenGui = Instance.new("ScreenGui", LocalPlayer:WaitForChild("PlayerGui"))
+ScreenGui.Name = "ShadowXHub"
+ScreenGui.ResetOnSpawn = false
+
+local Frame = Instance.new("Frame", ScreenGui)
+Frame.Size = UDim2.new(0, 400, 0, 220)
+Frame.Position = UDim2.new(0.5, -200, 0.5, -110)
+Frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+Frame.BorderSizePixel = 0
+Frame.Active = true
+Frame.Draggable = true
+
+local Title = Instance.new("TextLabel", Frame)
+Title.Size = UDim2.new(1, 0, 0, 40)
+Title.BackgroundTransparency = 1
+Title.Text = "🌑 Shadow X Hub - Login"
+Title.Font = Enum.Font.GothamBlack
+Title.TextSize = 22
+Title.TextColor3 = Color3.fromRGB(200, 200, 255)
+
+local KeyBox = Instance.new("TextBox", Frame)
+KeyBox.Size = UDim2.new(1, -40, 0, 40)
+KeyBox.Position = UDim2.new(0, 20, 0, 60)
+KeyBox.PlaceholderText = "Enter Key Here"
+KeyBox.Font = Enum.Font.SourceSans
+KeyBox.TextSize = 18
+KeyBox.Text = ""
+KeyBox.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+KeyBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+
+local LoginButton = Instance.new("TextButton", Frame)
+LoginButton.Size = UDim2.new(1, -40, 0, 40)
+LoginButton.Position = UDim2.new(0, 20, 0, 120)
+LoginButton.Text = "Unlock Hub"
+LoginButton.Font = Enum.Font.Gotham
+LoginButton.TextSize = 20
+LoginButton.BackgroundColor3 = Color3.fromRGB(80, 120, 255)
+LoginButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+
+local Status = Instance.new("TextLabel", Frame)
+Status.Size = UDim2.new(1, -40, 0, 30)
+Status.Position = UDim2.new(0, 20, 0, 170)
+Status.BackgroundTransparency = 1
+Status.Text = ""
+Status.Font = Enum.Font.Gotham
+Status.TextSize = 16
+Status.TextColor3 = Color3.fromRGB(255, 70, 70)
+
+--// Function: Load Core Script
+local function LoadCore()
+	pcall(function()
+		loadstring(game:HttpGet("https://raw.githubusercontent.com/ShadowKillerAI/ShadowHackHub/main/core.lua"))()
+	end)
+end
+
+--// Login Logic
+LoginButton.MouseButton1Click:Connect(function()
+	if KeyBox.Text == KEY_REQUIRED then
+		Status.Text = "Access Granted. Loading..."
+		wait(1)
+		ScreenGui:Destroy()
+		LoadCore()
+	else
+		Status.Text = "❌ Invalid Key!"
+	end
+end)
+
+--// CAMERA EXCHANGE FUNCTION (View from another player)
+local viewingOther = false
+local originalCameraSubject = Camera.CameraSubject
+local currentViewTarget = nil
+
+local function toggleCameraView(targetName)
+	if viewingOther then
+		Camera.CameraSubject = originalCameraSubject
+		viewingOther = false
+		currentViewTarget = nil
+	else
+		local targetPlayer = Players:FindFirstChild(targetName)
+		if targetPlayer and targetPlayer.Character and targetPlayer.Character:FindFirstChild("Humanoid") then
+			Camera.CameraSubject = targetPlayer.Character:FindFirstChild("Humanoid")
+			currentViewTarget = targetPlayer.Name
+			viewingOther = true
+		end
+	end
+end
+
+--// Bindable Toggle via F9 Command
+game:GetService("StarterGui"):SetCore("SendNotification", {
+	Title = "Shadow X Hub",
+	Text = "Type :view PlayerName in chat to spectate!",
+	Duration = 6
+})
+
+-- Chat Command to View Other Players
+LocalPlayer.Chatted:Connect(function(msg)
+	if msg:lower():sub(1,6) == ":view " then
+		local name = msg:sub(7)
+		toggleCameraView(name)
+	end
+end)
+
+-- Reset camera if target leaves
+Players.PlayerRemoving:Connect(function(p)
+	if currentViewTarget == p.Name and viewingOther then
+		toggleCameraView()
+	end
+end)
