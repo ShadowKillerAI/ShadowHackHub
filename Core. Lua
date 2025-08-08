@@ -16,7 +16,7 @@ local Humanoid = Character:WaitForChild("Humanoid")
 local Mouse = LocalPlayer:GetMouse()
 
 --// UI Library (ShadowX Style)
-local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/ShadowKillerAI /ShadowHackHub/main/ui.lua"))()
+local library = loadstring(game:HttpGet("https://github.com/ShadowKillerAI/ShadowHackHub/blob/main/Ui.Lua"))()
 local win = library:CreateWindow("🌑 Shadow X Hub")
 
 -- SECTION: Auto Farm
