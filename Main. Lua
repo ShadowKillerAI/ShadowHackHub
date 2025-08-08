@@ -66,7 +66,7 @@ Status.TextColor3 = Color3.fromRGB(255, 70, 70)
 --// Function: Load Core Script
 local function LoadCore()
 	pcall(function()
-		loadstring(game:HttpGet("https://raw.githubusercontent.com/ShadowKillerAI/ShadowHackHub/main/core.lua"))()
+		loadstring(game:HttpGet("https://github.com/ShadowKillerAI/ShadowHackHub/blob/main/Core.Lua"))()
 	end)
 end
 
