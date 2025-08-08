@@ -1,0 +1,37 @@
+-- Shadow X Hub | config.lua
+-- All saved settings, stat builds, and default feature toggles
+
+return {
+    Key = "shadowIsking! 2025best",
+    
+    AutoFarm = false,
+    AutoQuest = false,
+    AutoStats = {
+        Melee = true,
+        Defense = true,
+        BloxFruit = true,
+        Sword = false,
+        Gun = false
+    },
+
+    TargetFruit = "Light-Light",
+    
+    AutoRaid = false,
+    AutoBossFarm = false,
+    AutoDoughKing = false,
+    AutoSeaEvent = true,
+    AutoHaki = true,
+    AutoObservation = true,
+
+    V3Unlock = true,
+    V4AutoProgress = true,
+
+    FPSBoost = true,
+    AntiCheatBypass = true,
+    
+    UITheme = {
+        Background = Color3.fromRGB(20,20,20),
+        Accent = Color3.fromRGB(100,100,255),
+        Font = Enum.Font.Gotham
+    }
+}
