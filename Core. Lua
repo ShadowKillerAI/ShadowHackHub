@@ -1,0 +1,166 @@
+--[[ 
+  Shadow X Hub | Core Loader
+  Made by: @ShadowNinjaPlayZ
+  Requires: main.lua loader
+--]]
+
+--// Services
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local RunService = game:GetService("RunService")
+local VirtualInputManager = game:GetService("VirtualInputManager")
+local HttpService = game:GetService("HttpService")
+local LocalPlayer = Players.LocalPlayer
+local Character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+local Humanoid = Character:WaitForChild("Humanoid")
+local Mouse = LocalPlayer:GetMouse()
+
+--// UI Library (ShadowX Style)
+local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/ShadowKillerAI /ShadowHackHub/main/ui.lua"))()
+local win = library:CreateWindow("🌑 Shadow X Hub")
+
+-- SECTION: Auto Farm
+local mainTab = win:CreateTab("Main")
+mainTab:CreateToggle("Auto Farm", function(state)
+    _G.autoFarm = state
+    while _G.autoFarm and task.wait() do
+        pcall(function()
+            local mob = workspace.Enemies:FindFirstChildOfClass("Model")
+            if mob and mob:FindFirstChild("HumanoidRootPart") then
+                Character.HumanoidRootPart.CFrame = mob.HumanoidRootPart.CFrame * CFrame.new(0,10,0)
+                VirtualInputManager:SendKeyEvent(true, "Z", false, game)
+                wait(0.3)
+                VirtualInputManager:SendKeyEvent(false, "Z", false, game)
+            end
+        end)
+    end
+end)
+
+mainTab:CreateToggle("Auto Quest", function(state)
+    _G.autoQuest = state
+    while _G.autoQuest and task.wait(1) do
+        pcall(function()
+            local questGiver = workspace:FindFirstChild("QuestNPC")
+            if questGiver then
+                fireproximityprompt(questGiver.ProximityPrompt)
+            end
+        end)
+    end
+end)
+
+-- SECTION: Fruit System
+local fruitTab = win:CreateTab("Fruits")
+
+fruitTab:CreateToggle("Auto Buy Random Fruit", function(state)
+    _G.autoBuyRandom = state
+    while _G.autoBuyRandom and wait(30) do
+        pcall(function()
+            game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("BuyRandomDevilFruit")
+        end)
+    end
+end)
+
+fruitTab:CreateToggle("Fruit Sniper (Light)", function(state)
+    _G.sniper = state
+    local targetFruit = "Light-Light"
+    while _G.sniper and wait(5) do
+        pcall(function()
+            local stock = game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("GetFruits")
+            for i, v in pairs(stock) do
+                if v["Name"] == targetFruit and v["Stock"] > 0 then
+                    game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("BuyDevilFruit", targetFruit)
+                    print("Sniped Light Fruit")
+                end
+            end
+        end)
+    end
+end)
+
+fruitTab:CreateButton("Fruit Rain (Troll)", function()
+    for i = 1, 10 do
+        local fruit = Instance.new("Tool", workspace)
+        fruit.Name = "FakeFruit_" .. i
+        fruit.Handle = Instance.new("Part", fruit)
+        fruit.Handle.Position = LocalPlayer.Character.HumanoidRootPart.Position + Vector3.new(math.random(-50,50), 50, math.random(-50,50))
+    end
+end)
+
+-- SECTION: Auto Raids & Boss
+local raidTab = win:CreateTab("Raids/Boss")
+
+raidTab:CreateToggle("Auto Dough King", function(state)
+    _G.autoDough = state
+    while _G.autoDough and wait(1) do
+        pcall(function()
+            local boss = workspace.Enemies:FindFirstChild("Dough King")
+            if boss then
+                Character.HumanoidRootPart.CFrame = boss.HumanoidRootPart.CFrame * CFrame.new(0,10,0)
+            end
+        end)
+    end
+end)
+
+raidTab:CreateToggle("Auto Leviathan", function(state)
+    _G.autoLevi = state
+    while _G.autoLevi and wait(5) do
+        pcall(function()
+            for _, mob in pairs(workspace:GetDescendants()) do
+                if mob.Name == "Leviathan" then
+                    Character.HumanoidRootPart.CFrame = mob.HumanoidRootPart.CFrame * CFrame.new(0,10,0)
+                end
+            end
+        end)
+    end
+end)
+
+-- SECTION: Auto Haki & Training
+local hakiTab = win:CreateTab("Haki & V4")
+
+hakiTab:CreateToggle("Auto Buso Haki Train", function(state)
+    _G.autoBuso = state
+    while _G.autoBuso and wait(0.5) do
+        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("Buso")
+    end
+end)
+
+hakiTab:CreateToggle("Auto Observation Haki", function(state)
+    _G.autoObs = state
+    while _G.autoObs and wait(5) do
+        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("KenTalk", "Buy")
+    end
+end)
+
+hakiTab:CreateToggle("Auto V3 Unlock", function(state)
+    _G.autoV3 = state
+    while _G.autoV3 and wait(3) do
+        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("UnlockV3")
+    end
+end)
+
+-- SECTION: AI Bot + Misc
+local miscTab = win:CreateTab("AI & Utility")
+
+miscTab:CreateToggle("Anti-Cheat Bypass", function(state)
+    if state then
+        settings().Physics.AllowSleep = false
+        settings().Rendering.EagerBulkExecution = true
+    end
+end)
+
+miscTab:CreateButton("FPS Boost", function()
+    for _,v in pairs(game:GetDescendants()) do
+        if v:IsA("BasePart") then
+            v.Material = Enum.Material.SmoothPlastic
+            v.Reflectance = 0
+        end
+    end
+    game:GetService("Lighting").FogEnd = 9e9
+    setfpscap(60)
+end)
+
+miscTab:CreateButton("Teleport to Sea Event", function()
+    local seaEvent = workspace:FindFirstChild("SeaEvent")
+    if seaEvent then
+        Character.HumanoidRootPart.CFrame = seaEvent.CFrame
+    end
+end)
